@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
+import { UserContext } from "../userContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
 
+  const { setUser } = useContext(UserContext);
   async function handleLogin(ev) {
     ev.preventDefault();
     try {
@@ -14,17 +16,19 @@ export default function LoginPage() {
         email,
         password,
       });
-      if (response.data == "Logged in") {
+      if (response.data.success) {
+        setUser(response.data.user);
         alert("Login Successful");
         setRedirect(true);
       } else {
-        alert("Login Failed: " + response.data);
+        alert("Login Failed: " + response.data.message);
       }
     } catch (e) {
-      alert("Login Failed: " + e.response.data);
+      alert("Login Failed: " + e.response.data.message);
     }
   }
 
+  //klo bener user pw ny redirect ke sni
   if (redirect) {
     return <Navigate to={"/"} />;
   }

@@ -44,15 +44,19 @@ app.post("/login", async (req, res) => {
         (err, token) => {
           if (err) throw err;
           res
-            .cookie("token", token, { sameSite: "none", secure: false })
-            .json("Logged in");
+            .cookie("token", token, {
+              httponly: true,
+              sameSite: "lax",
+              secure: false,
+            })
+            .json({ success: true, user: userDoc });
         }
       );
     } else {
-      res.status(422).json("wrong password");
+      res.status(422).json({ success: false, message: "wrong password" });
     }
   } else {
-    res.json("wrong email");
+    res.status(422).json({ success: false, message: "wrong email" });
   }
 });
 
@@ -68,6 +72,20 @@ app.post("/register", async (req, res) => {
   } catch (e) {
     res.status(422).json(e);
   }
+});
+
+app.get("/profile", (req, res) => {
+  const { token } = req.cookies;
+  if (token) {
+    jwt.verify(token, jwtsecret, {}, async (err, user) => {
+      if (err) throw err;
+      const { name, email, _id } = await User.findById(user.id);
+      res.json({ name, email, _id });
+    });
+  } else {
+    res.json(null);
+  }
+  // console.log(req.cookies.token)
 });
 
 app.listen(port, () => {
