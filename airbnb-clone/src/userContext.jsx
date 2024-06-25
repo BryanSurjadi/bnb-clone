@@ -13,11 +13,12 @@ export function UserContextProvider({ children }) {
         .get("/profile", { withCredentials: true })
         .then((response) => {
           setUser(response.data);
-          setReady(true);
         })
         .catch((error) => {
           console.error("Failed to fetch profile:", error);
-        });
+          setUser(null);
+        })
+        .finally(() => setReady(true));
     }
   }, []);
   return (

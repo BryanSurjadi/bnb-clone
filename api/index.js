@@ -2,10 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const User = require("./models/User");
+const Place = require("./models/Place");
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const downloadImage = require("image-downloader");
+const multer = require("multer");
+const fs = require("fs");
 
 const app = express();
 const port = 3000;
@@ -22,7 +26,7 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
-
+app.use("/uploads", express.static(__dirname + "/uploads"));
 mongoose.connect(process.env.MONGO_URL);
 
 app.get("/test", (req, res) => {
@@ -74,6 +78,73 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.post("/accomodations", async (req, res) => {
+  const { token } = req.cookies;
+  const {
+    title,
+    address,
+    photos,
+    desc,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+    price,
+  } = req.body;
+  jwt.verify(token, jwtsecret, {}, async (err, user) => {
+    if (err) throw err;
+    try {
+      const placeDoc = await Place.create({
+        owner: user.id,
+        title,
+        address,
+        photos,
+        desc,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        price,
+      });
+      res.json(placeDoc);
+    } catch (e) {
+      res.status(422).json({
+        message: "Something went wrong",
+      });
+    }
+  });
+});
+
+app.post("/upload-by-link", async (req, res) => {
+  const { link } = req.body;
+  const newName = "photo" + Date.now() + ".jpg";
+  await downloadImage.image({
+    url: link,
+    dest: __dirname + "/uploads/" + newName,
+  });
+  res.json(newName);
+});
+
+const photosMiddleware = multer({ dest: "uploads" });
+app.post("/upload", photosMiddleware.array("photos", 50), async (req, res) => {
+  try {
+    const uploadedFiles = [];
+    for (let i = 0; i < req.files.length; i++) {
+      const { path, originalname } = req.files[i];
+      const parts = originalname.split(".");
+      const ext = parts[parts.length - 1];
+      const newPath = path + "." + ext;
+      fs.renameSync(path, newPath);
+      uploadedFiles.push(newPath.replace(`uploads\\`, ""));
+    }
+    res.json({ files: uploadedFiles }); // Respond with modified file paths or filenames
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
   if (token) {
@@ -86,6 +157,10 @@ app.get("/profile", (req, res) => {
     res.json(null);
   }
   // console.log(req.cookies.token)
+});
+
+app.post("/logout", (req, res) => {
+  res.cookie("token", "").json(true);
 });
 
 app.listen(port, () => {

@@ -7,7 +7,7 @@ export default function Header() {
   return (
     <header className="mb-4 flex justify-between pl-6">
       <Link to={"/"} href="" className="flex items-center gap-2 justify-center">
-        <img src="../public/logobnb.png" alt="" className="size-10" />
+        <img src="/logobnb.png" alt="" className="size-10" />
         <span className="font-bold text-2xl text-primary">AirBrY</span>
       </Link>
 
