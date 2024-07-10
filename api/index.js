@@ -117,6 +117,46 @@ app.post("/accomodations", async (req, res) => {
   });
 });
 
+app.put("/accomodations/:id", async (req, res) => {
+  const { token } = req.cookies;
+  const {
+    id,
+    title,
+    address,
+    photos,
+    desc,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+    price,
+  } = req.body;
+
+  jwt.verify(token, jwtsecret, {}, async (err, user) => {
+    if (err) throw err;
+    const placeDoc = await Place.findById(id);
+    if (user.id === placeDoc.owner.toString()) {
+      placeDoc.set({
+        title,
+        address,
+        photos,
+        desc,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        price,
+      });
+      await placeDoc.save();
+      res.json(placeDoc);
+    } else {
+      res.status(403).json({ message: "You do not own this place" });
+    }
+  });
+});
+
 app.post("/upload-by-link", async (req, res) => {
   const { link } = req.body;
   const newName = "photo" + Date.now() + ".jpg";
@@ -126,6 +166,21 @@ app.post("/upload-by-link", async (req, res) => {
   });
   res.json(newName);
 });
+
+const convertBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+
+    fileReader.onload = () => {
+      resolve(fileReader.result);
+    };
+
+    fileReader.onerror = (error) => {
+      reject(error);
+    };
+  });
+};
 
 const photosMiddleware = multer({ dest: "uploads" });
 app.post("/upload", photosMiddleware.array("photos", 50), async (req, res) => {
@@ -157,6 +212,29 @@ app.get("/profile", (req, res) => {
     res.json(null);
   }
   // console.log(req.cookies.token)
+});
+
+app.get("/accomodations", async (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, jwtsecret, {}, async (err, user) => {
+    const { id } = user;
+    res.json(await Place.find({ owner: id }));
+  });
+});
+
+app.get("/accomodations/:id", async (req, res) => {
+  const { id } = req.params;
+
+  // res.json(await Place.findById(id));
+  try {
+    const accomodations = await Place.findById(id);
+    if (!accomodations) {
+      res.json("Not found");
+    }
+    res.json(accomodations);
+  } catch (e) {
+    res.json("Not found");
+  }
 });
 
 app.post("/logout", (req, res) => {
