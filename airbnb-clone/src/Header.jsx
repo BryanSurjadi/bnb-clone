@@ -11,7 +11,7 @@ export default function Header() {
         <span className="font-bold text-2xl text-primary">AirBrY</span>
       </Link>
 
-      <div className="flex justify-between gap-4 border border-gray-300 rounded-full py-2 px-4 items-center shadow-md shadow-gray-300">
+      <div className="flex justify-between gap-4 border border-gray-300 rounded-full font-semibold py-2 px-4 items-center shadow-md shadow-gray-300">
         <div className="text-lg">Location</div>
         <div className="border-l h-8 border-gray-300"></div>
         <div className="text-lg">Date</div>

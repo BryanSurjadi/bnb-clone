@@ -237,6 +237,11 @@ app.get("/accomodations/:id", async (req, res) => {
   }
 });
 
+app.get("/places", async (req, res) => {
+  const places = await Place.find({});
+  res.json(places);
+});
+
 app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
 });
