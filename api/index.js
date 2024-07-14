@@ -227,7 +227,7 @@ app.get("/accomodations/:id", async (req, res) => {
 
   // res.json(await Place.findById(id));
   try {
-    const accomodations = await Place.findById(id);
+    const accomodations = await Place.findById(id).populate("owner", "name");
     if (!accomodations) {
       res.json("Not found");
     }

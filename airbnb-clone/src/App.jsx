@@ -8,6 +8,7 @@ import RegisterPage from "./pages/RegisterPage";
 import axios from "axios";
 import { UserContextProvider } from "./userContext";
 import { AccountPage } from "./pages/AccountPage";
+import ListingPage from "./pages/ListingPage";
 
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.withCredentials = true;
@@ -26,6 +27,7 @@ function App() {
             path="/account/:subpage/:action/:id"
             element={<AccountPage />}
           />
+          <Route path="/listing/:id?" element={<ListingPage />} />
         </Route>
       </Routes>
     </UserContextProvider>
