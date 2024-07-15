@@ -266,6 +266,18 @@ app.post("/bookings", async (req, res) => {
   }
 });
 
+app.get("/bookings/:id", async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+    res.json(booking);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on http:://localhost:${port}`);
 });

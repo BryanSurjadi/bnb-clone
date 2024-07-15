@@ -9,6 +9,7 @@ import axios from "axios";
 import { UserContextProvider } from "./userContext";
 import { AccountPage } from "./pages/AccountPage";
 import ListingPage from "./pages/ListingPage";
+import BookingDetailsPage from "./pages/BookingDetails";
 
 axios.defaults.baseURL = "http://localhost:3000";
 axios.defaults.withCredentials = true;
@@ -28,6 +29,10 @@ function App() {
             element={<AccountPage />}
           />
           <Route path="/listing/:id?" element={<ListingPage />} />
+          <Route
+            path="/account/bookings/:id"
+            element={<BookingDetailsPage />}
+          />
         </Route>
       </Routes>
     </UserContextProvider>
