@@ -3,6 +3,7 @@ const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const User = require("./models/User");
 const Place = require("./models/Place");
+const Booking = require("./models/Booking");
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -194,7 +195,7 @@ app.post("/upload", photosMiddleware.array("photos", 50), async (req, res) => {
       fs.renameSync(path, newPath);
       uploadedFiles.push(newPath.replace(`uploads\\`, ""));
     }
-    res.json({ files: uploadedFiles }); // Respond with modified file paths or filenames
+    res.json({ files: uploadedFiles });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" });
   }
@@ -244,6 +245,25 @@ app.get("/places", async (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
+});
+
+app.post("/bookings", async (req, res) => {
+  const { place, checkIn, checkOut, guests, price, name, phone } = req.body;
+
+  try {
+    const booking = await Booking.create({
+      place,
+      checkIn,
+      checkOut,
+      guests,
+      price,
+      name,
+      phone,
+    });
+    res.json(booking);
+  } catch (err) {
+    res.json(err);
+  }
 });
 
 app.listen(port, () => {

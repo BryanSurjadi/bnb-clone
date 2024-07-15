@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AccomodationPerk from "../AccomodationPerk";
+import BookingPlace from "../BookingPlace";
 
 export default function ListingPage() {
   const { id } = useParams();
@@ -60,7 +61,7 @@ export default function ListingPage() {
   return (
     <div className="pt-2  w-full items-center justify-center flex ">
       {place !== null && (
-        <div className="w-2/3 justify-center items-start flex flex-col ">
+        <div className="w-2/3 justify-center items-start flex flex-col mb-auto pb-10">
           <h1 className="font-semibold text-3xl">{place.title}</h1>
 
           {place.image !== null && (
@@ -145,6 +146,9 @@ export default function ListingPage() {
                 <hr className="w-5/6  my-4 border-2" />
                 <p className="font-small "> {place.desc}</p>
                 <hr className="w-5/6  my-4 border-2" />
+                <h3 className="font-semibold text-2xl">
+                  Additional Information
+                </h3>
                 <p>{place.extraInfo}</p>
                 <div className="flex gap-6 flex-rows">
                   <p className="flex justify-center items-center gap-2">
@@ -196,14 +200,14 @@ export default function ListingPage() {
                   </p>
                 </div>
                 <hr className="w-5/6  my-4 border-2" />
-                <div className="font-bold text-2xl">What You'll Get</div>
+                <h3 className="font-semibold text-2xl">What You'll Get</h3>
                 <AccomodationPerk
                   selectedPerks={place.perks}
                 ></AccomodationPerk>
               </div>
             </div>
-            <div className="flex flex-col gap-2 bg-blue-500">
-              Buat price dll
+            <div className="flex flex-col gap-2  p-10 items-center">
+              <BookingPlace place={place}></BookingPlace>
             </div>
           </div>
         </div>

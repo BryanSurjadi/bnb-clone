@@ -17,7 +17,7 @@ export default function AccommodationPerks({ selectedPerks }) {
             selectedPerks.includes(perk.name) && (
               <label
                 key={perk.name}
-                className="flex border p-4 gap-4 items-center cursor-pointer"
+                className="flex border p-4 gap-4 items-center "
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +25,6 @@ export default function AccommodationPerks({ selectedPerks }) {
                   fill="currentColor"
                   className="size-6"
                 >
-                  {/* Insert SVG paths for each perk */}
                   {perk.name === "wifi" && (
                     <path
                       fillRule="evenodd"
