@@ -3,6 +3,7 @@ import { UserContext } from "../userContext";
 import { Link, Navigate, redirect, useParams } from "react-router-dom";
 import axios from "axios";
 import AccomodationPage from "./AccomodationPage";
+import BookingsPage from "./BookingsPage";
 
 export function AccountPage() {
   const [Redirect, setRedirect] = useState(null);
@@ -27,12 +28,12 @@ export function AccountPage() {
 
   function linkClasses(type) {
     let base =
-      "py-4 px-6 transition-all duration-300 ease-in-out flex items-center gap-1";
+      "py-4  transition-all duration-300 ease-in-out flex items-center gap-1";
     if (type === subpage) {
-      base += " bg-primary text-white rounded-full shadow-md shadow-gray-300 ";
+      base += "text-white border-b-4 border-black";
     } else {
       base +=
-        " hover:bg-primary hover:text-slate-400 hover:scale-105 hover:rounded-full shadow-md shadow-gray-400 bg-gray-300 rounded-full font-medium text-slate-600";
+        " hover:border-b-4 hover:text-slate-400 hover:border-black hover:scale-105  font-medium text-slate-600";
     }
     return base;
   }
@@ -106,6 +107,7 @@ export function AccountPage() {
       )}
 
       {subpage === "accomodations" && <AccomodationPage />}
+      {subpage === "bookings" && <BookingsPage />}
     </div>
   );
 }

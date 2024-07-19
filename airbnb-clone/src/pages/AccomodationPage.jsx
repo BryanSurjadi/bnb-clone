@@ -57,10 +57,10 @@ export default function AccomodationPage() {
                   key={accomodations._id}
                   className="flex border rounded-2xl shadow-md shadow-gray-300 p-2 cursor-pointer bg-gray-50"
                 >
-                  <div className="w-62 h-48 shrink-0 overflow-hidden border rounded-xl">
+                  <div className="overflow-hidden shrink-0 border rounded-xl">
                     <img
                       src={`http://localhost:3000/uploads/${accomodations.photos[0]}`}
-                      className="w-full h-full object-cover rounded-xl shrink-0 "
+                      className="w-64 h-48 shrink-0 object-cover rounded-xl  "
                     />
                   </div>
                   <div className="ml-4 mt-2 text-2xl text-primary font-semibold flex flex-col justify-align items-left text-left">

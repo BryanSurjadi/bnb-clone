@@ -248,27 +248,42 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/bookings", async (req, res) => {
-  const { place, checkIn, checkOut, guests, price, name, phone } = req.body;
+  const { token } = req.cookies;
+  jwt.verify(token, jwtsecret, {}, async (err, user) => {
+    if (err) throw err;
+    const { id } = user;
+    const { place, checkIn, checkOut, guests, price, name, phone } = req.body;
+    try {
+      const booking = await Booking.create({
+        place,
+        user: id,
+        checkIn,
+        checkOut,
+        guests,
+        price,
+        name,
+        phone,
+      });
+      res.json(booking);
+    } catch (err) {
+      res.json(err);
+    }
+  });
+});
 
-  try {
-    const booking = await Booking.create({
-      place,
-      checkIn,
-      checkOut,
-      guests,
-      price,
-      name,
-      phone,
-    });
-    res.json(booking);
-  } catch (err) {
-    res.json(err);
-  }
+app.get("/bookings", async (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, jwtsecret, {}, async (err, user) => {
+    if (err) throw err;
+    const { id } = user;
+    const bookings = await Booking.find({ user: id }).populate("place");
+    res.json(bookings);
+  });
 });
 
 app.get("/bookings/:id", async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id);
+    const booking = await Booking.findById(req.params.id).populate("place");
     if (!booking) {
       return res.status(404).json({ error: "Booking not found" });
     }
